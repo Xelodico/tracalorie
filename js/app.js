@@ -1,10 +1,15 @@
 class CalorieTracker {
-  #calorieLimit = 2000;
-  #totalCalories = 0;
-  #meals = [];
-  #workouts = [];
+  #calorieLimit;
+  #totalCalories;
+  #meals;
+  #workouts;
 
   constructor() {
+    this.#calorieLimit = 2000;
+    this.#totalCalories = 0;
+    this.#meals = [];
+    this.#workouts = [];
+
     this.#displayCaloriesLimit();
     // this.#displayCaloriesTotal();
     // this.#displayCaloriesConsumed();
@@ -28,6 +33,26 @@ class CalorieTracker {
     this.#totalCalories -= workout.calories;
     this.#displayNewWorkout(workout);
     this.#render();
+  }
+
+  removeMeal(id) {
+    const index = this.#meals.findIndex((meal) => meal.id === id);
+    if (index !== -1) {
+      const meal = this.#meals[index];
+      this.#totalCalories -= meal.calories;
+      this.#meals.splice(index, 1);
+      this.#render();
+    }
+  }
+
+  removeWorkout(id) {
+    const index = this.#workouts.findIndex((workout) => workout.id === id);
+    if (index !== -1) {
+      const workout = this.#workouts[index];
+      this.#totalCalories += workout.calories;
+      this.#workouts.splice(index, 1);
+      this.#render();
+    }
   }
 
   // Private Methods
@@ -174,6 +199,12 @@ class App {
     document
       .querySelector("#workout-form")
       .addEventListener("submit", this.#newItem.bind(this, "workout"));
+    document
+      .querySelector("#meal-items")
+      .addEventListener("click", this.#removeItem.bind(this, "meal"));
+    document
+      .querySelector("#workout-items")
+      .addEventListener("click", this.#removeItem.bind(this, "workout"));
   }
 
   #newItem(type, e) {
@@ -192,7 +223,7 @@ class App {
       const meal = new Meal(name.value, +calories.value);
       this.#tracker.addMeal(meal);
     } else {
-      const workout = new Workout(name.value, calories.value);
+      const workout = new Workout(name.value, +calories.value);
       this.#tracker.addWorkout(workout);
     }
 
@@ -201,6 +232,23 @@ class App {
 
     const collapseItem = document.querySelector(`#collapse-${type}`);
     const bsCollapse = new bootstrap.Collapse(collapseItem, { toggle: true });
+  }
+
+  #removeItem(type, e) {
+    if (
+      e.target.classList.contains("delete") ||
+      e.target.classList.contains("fa-xmark")
+    ) {
+      if (confirm("Are you sure?")) {
+        const id = e.target.closest(".card").getAttribute("data-id");
+
+        type === "meal"
+          ? this.#tracker.removeMeal(id)
+          : this.#tracker.removeWorkout(id);
+
+        e.target.closest(".card").remove();
+      }
+    }
   }
 }
 
