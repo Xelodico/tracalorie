@@ -4,25 +4,71 @@ class CalorieTracker {
   #meals = [];
   #workouts = [];
 
+  constructor() {
+    this.#displayCaloriesLimit();
+    this.#displayCaloriesTotal();
+    this.#displayCaloriesConsumed();
+    this.#displayCaloriesBurned();
+    this.#displayCaloriesRemaining();
+  }
+
+  // Public Methods/API
+
   addMeal(meal) {
     this.#meals.push(meal);
     this.#totalCalories += meal.calories;
+    this.#render();
   }
 
   addWorkout(workout) {
     this.#workouts.push(workout);
     this.#totalCalories -= workout.calories;
+    this.#render();
   }
 
-  get meals() {
-    return this.#meals;
-  }
-  get workouts() {
-    return this.#workouts;
+  // Private Methods
+
+  #displayCaloriesTotal() {
+    const totalCaloriesEl = document.querySelector("#calories-total");
+    totalCaloriesEl.textContent = this.#totalCalories;
   }
 
-  get totalCalories() {
-    return this.#totalCalories;
+  #displayCaloriesLimit() {
+    const calorieLimitEl = document.querySelector("#calories-limit");
+    calorieLimitEl.textContent = this.#calorieLimit;
+  }
+
+  #displayCaloriesConsumed() {
+    const caloriesConsumedEl = document.querySelector("#calories-consumed");
+    const consumed = this.#meals.reduce(
+      (total, meal) => total + meal.calories,
+      0
+    );
+
+    caloriesConsumedEl.textContent = consumed;
+  }
+
+  #displayCaloriesBurned() {
+    const caloriesBurnedEl = document.querySelector("#calories-burned");
+    const burned = this.#workouts.reduce(
+      (total, workout) => total + workout.calories,
+      0
+    );
+
+    caloriesBurnedEl.textContent = burned;
+  }
+
+  #displayCaloriesRemaining() {
+    const caloriesRemainingEl = document.querySelector("#calories-remaining");
+    const remaining = this.#calorieLimit - this.#totalCalories;
+    caloriesRemainingEl.textContent = remaining;
+  }
+
+  #render() {
+    this.#displayCaloriesTotal();
+    this.#displayCaloriesConsumed();
+    this.#displayCaloriesBurned();
+    this.#displayCaloriesRemaining();
   }
 }
 
@@ -46,9 +92,5 @@ const tracker = new CalorieTracker();
 const breakfast = new Meal("Breakfast", 400);
 tracker.addMeal(breakfast);
 
-const run = new Workout("Morning Run", 300);
+const run = new Workout("Morning Run", 320);
 tracker.addWorkout(run);
-
-console.log(tracker.meals);
-console.log(tracker.workouts);
-console.log(tracker.totalCalories);
