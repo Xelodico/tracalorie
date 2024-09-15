@@ -55,6 +55,13 @@ class CalorieTracker {
     }
   }
 
+  reset() {
+    this.#totalCalories = 0;
+    this.#meals = [];
+    this.#workouts = [];
+    this.#render();
+  }
+
   // Private Methods
 
   #displayCaloriesTotal() {
@@ -205,6 +212,15 @@ class App {
     document
       .querySelector("#workout-items")
       .addEventListener("click", this.#removeItem.bind(this, "workout"));
+    document
+      .querySelector("#filter-meals")
+      .addEventListener("keyup", this.#filterItems.bind(this, "meal"));
+    document
+      .querySelector("#filter-workouts")
+      .addEventListener("keyup", this.#filterItems.bind(this, "workout"));
+    document
+      .querySelector("#reset")
+      .addEventListener("click", this.#reset.bind(this));
   }
 
   #newItem(type, e) {
@@ -249,6 +265,27 @@ class App {
         e.target.closest(".card").remove();
       }
     }
+  }
+
+  #filterItems(type, e) {
+    const text = e.target.value.toLowerCase();
+    document.querySelectorAll(`#${type}-items .card`).forEach((item) => {
+      const name = item.firstElementChild.firstElementChild.textContent;
+
+      if (name.toLowerCase().indexOf(text) !== -1) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  }
+
+  #reset() {
+    this.#tracker.reset();
+    document.querySelector("#meal-items").innerHTML = "";
+    document.querySelector("#workout-items").innerHTML = "";
+    document.querySelector("#filter-meals").value = "";
+    document.querySelector("#filter-workouts").value = "";
   }
 }
 
