@@ -46,6 +46,7 @@ class CalorieTracker {
       this.#totalCalories -= meal.calories;
       Storage.updateTotalCalories(this.#totalCalories);
       this.#meals.splice(index, 1);
+      Storage.removeMeal(id);
       this.#render();
     }
   }
@@ -57,6 +58,7 @@ class CalorieTracker {
       this.#totalCalories += workout.calories;
       Storage.updateTotalCalories(this.#totalCalories);
       this.#workouts.splice(index, 1);
+      Storage.removeWorkout(id);
       this.#render();
     }
   }
@@ -257,6 +259,12 @@ class Storage {
     localStorage.setItem("meals", JSON.stringify(meals));
   }
 
+  static removeMeal(id) {
+    let meals = Storage.getMeals();
+    meals = meals.filter((meal) => meal.id !== id);
+    localStorage.setItem("meals", JSON.stringify(meals));
+  }
+
   static getWorkouts() {
     let workouts;
     if (localStorage.getItem("workouts") === null) {
@@ -270,6 +278,12 @@ class Storage {
   static saveWorkout(workout) {
     let workouts = Storage.getWorkouts();
     workouts.push(workout);
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+  }
+
+  static removeWorkout(id) {
+    let workouts = Storage.getWorkouts();
+    workouts = workouts.filter((workout) => workout.id !== id);
     localStorage.setItem("workouts", JSON.stringify(workouts));
   }
 }
