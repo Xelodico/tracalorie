@@ -11,12 +11,9 @@ class CalorieTracker {
     this.#workouts = Storage.getWorkouts();
 
     this.#displayCaloriesLimit();
-    // this.#displayCaloriesTotal();
-    // this.#displayCaloriesConsumed();
-    // this.#displayCaloriesBurned();
-    // this.#displayCaloriesRemaining();
-    // this.#displayCaloriesProgress();
     this.#render();
+
+    document.querySelector("#limit").value = this.#calorieLimit;
   }
 
   // Public Methods/API
@@ -67,6 +64,7 @@ class CalorieTracker {
     this.#totalCalories = 0;
     this.#meals = [];
     this.#workouts = [];
+    Storage.clearAll();
     this.#render();
   }
 
@@ -285,6 +283,15 @@ class Storage {
     let workouts = Storage.getWorkouts();
     workouts = workouts.filter((workout) => workout.id !== id);
     localStorage.setItem("workouts", JSON.stringify(workouts));
+  }
+
+  static clearAll() {
+    localStorage.removeItem("totalCalories");
+    localStorage.removeItem("meals");
+    localStorage.removeItem("workouts");
+
+    // If you want to clear the limit,
+    // localStorage.clear();
   }
 }
 
