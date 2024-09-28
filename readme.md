@@ -6,6 +6,8 @@ This is part of Brad Traversy's [**Modern JS From The Beginning 2.0**](https://w
 
 All of the code/classes I've written are in the `app.js` file.
 
+Click [here](https://github.com/Xelodico/tracalorie-webpack) for a version of this app built with Webpack.
+
 **[Demo](https://xelodico-tracalorie.netlify.app/)**
 
 **App Screenshot**
